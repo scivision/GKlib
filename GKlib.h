@@ -42,6 +42,11 @@
 #include <assert.h>
 #include <sys/stat.h>
 
+/* Old MSVC does not have INFINITY defined */
+#ifndef INFINITY
+#define INFINITY FLT_MAX
+#endif
+
 #if defined(__WITHPCRE__)
   #include <pcreposix.h>
 #else

@@ -24,7 +24,6 @@ endif()
 
 # Add compiler flags.
 if(MSVC)
-  add_compile_options(/Ox)
   add_compile_definitions(WIN32 MSC _CRT_SECURE_NO_DEPRECATE USE_GKREGEX)
 elseif(MINGW)
   add_compile_definitions(USE_GKREGEX)
@@ -123,14 +122,14 @@ endif(HAVE_GETLINE)
 
 # Custom check for TLS.
 if(MSVC)
-  add_compile_definitions(__thread=__declspec(thread))
+  add_compile_definitions("__thread=__declspec(thread)")
 
   # This if checks if that value is cached or not.
   if(NOT DEFINED HAVE_THREADLOCALSTORAGE)
     message(CHECK_START "checking for thread-local storage")
     try_compile(HAVE_THREADLOCALSTORAGE
-      ${CMAKE_BINARY_DIR}
-      ${GKLIB_PATH}/conf/check_thread_storage.c)
+      ${PROJECT_BINARY_DIR}/threadlocalstorage_check
+      ${CMAKE_CURRENT_SOURCE_DIR}/conf/check_thread_storage.c)
     if(HAVE_THREADLOCALSTORAGE)
       message(CHECK_PASS "found")
     else()
