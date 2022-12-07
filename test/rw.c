@@ -1,13 +1,13 @@
 /*!
-\file
-\brief A simple frequent itemset discovery program to test GKlib's routines
+\file  
+\brief A simple (personalized) random walk program to test GKlib's routines
 
 \date 6/12/2008
 \author George
-\version \verbatim $Id: rw.c 11387 2012-01-21 23:36:23Z karypis $ \endverbatim
+\version \verbatim $Id$ \endverbatim
 */
 
-#include "GKlib.h"
+#include <GKlib.h>
 
 /*************************************************************************/
 /*! Data structures for the code */
@@ -86,7 +86,7 @@ static char shorthelpstr[][100] = {
 "          use 'rw -help' for a summary of the options.",
 ""
 };
-
+ 
 
 
 /*************************************************************************/
@@ -106,7 +106,7 @@ int main(int argc, char *argv[])
   params_t *params;
   gk_csr_t *mat;
   FILE *fpout;
-
+ 
   /* get command-line options */
   params = parse_cmdline(argc, argv);
 
@@ -115,7 +115,6 @@ int main(int argc, char *argv[])
 
   /* display some basic stats */
   print_init_info(params, mat);
-
 
 
   if (params->ntvs != -1) {
@@ -137,7 +136,7 @@ int main(int argc, char *argv[])
     /* output the computed pr scores */
     fpout = gk_fopen(params->outfile, "w", "main: outfile");
     for (i=0; i<mat->nrows; i++) {
-      for (j=0; j<params->ntvs; j++)
+      for (j=0; j<params->ntvs; j++) 
         fprintf(fpout, "%.4e ", prs[j][i]);
       fprintf(fpout, "\n");
     }
@@ -158,7 +157,7 @@ int main(int argc, char *argv[])
 
     /* output the computed pr scores */
     fpout = gk_fopen(params->outfile, "w", "main: outfile");
-    for (i=0; i<mat->nrows; i++)
+    for (i=0; i<mat->nrows; i++) 
       fprintf(fpout, "%.4e\n", pr[i]);
     gk_fclose(fpout);
 
@@ -184,7 +183,7 @@ int main(int argc, char *argv[])
           jmax = mat->rowind[j];
         }
       }
-      fprintf(fpout, "%.4e %10zd %.4e %10d\n", pr[i],
+      fprintf(fpout, "%.4e %10zd %.4e %10d\n", pr[i], 
           mat->rowptr[i+1]-mat->rowptr[i], maxdiff, jmax+1);
     }
     gk_fclose(fpout);
@@ -208,7 +207,7 @@ void print_init_info(params_t *params, gk_csr_t *mat)
   printf("*******************************************************************************\n");
   printf(" fis\n\n");
   printf("Matrix Information ---------------------------------------------------------\n");
-  printf(" input file=%s, [%d, %d, %zd]\n",
+  printf(" input file=%s, [%d, %d, %zd]\n", 
       params->infile, mat->nrows, mat->ncols, mat->rowptr[mat->nrows]);
 
   printf("\n");
@@ -304,3 +303,4 @@ params_t *parse_cmdline(int argc, char *argv[])
 
   return params;
 }
+

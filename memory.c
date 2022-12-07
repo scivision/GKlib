@@ -1,19 +1,19 @@
 /*!
 \file  memory.c
-\brief This file contains various allocation routines
+\brief This file contains various allocation routines 
 
-The allocation routines included are for 1D and 2D arrays of the
-most datatypes that GKlib support. Many of these routines are
-defined with the help of the macros in gk_memory.h. These macros
+The allocation routines included are for 1D and 2D arrays of the 
+most datatypes that GKlib support. Many of these routines are 
+defined with the help of the macros in gk_memory.h. These macros 
 can be used to define other memory allocation routines.
 
 \date   Started 4/3/2007
 \author George
-\version\verbatim $Id: memory.c 10783 2011-09-21 23:19:56Z karypis $ \endverbatim
+\version\verbatim $Id: memory.c 21050 2017-05-25 03:53:58Z karypis $ \endverbatim
 */
 
 
-#include "GKlib.h"
+#include <GKlib.h>
 
 /* This is for the global mcore that tracks all heap allocations */
 static __thread gk_mcore_t *gkmcore = NULL;
@@ -22,20 +22,30 @@ static __thread gk_mcore_t *gkmcore = NULL;
 /*************************************************************************/
 /*! Define the set of memory allocation routines for each data type */
 /**************************************************************************/
-GK_MKALLOC(gk_c,   char)
-GK_MKALLOC(gk_i,   int)
-GK_MKALLOC(gk_i32, int32_t)
-GK_MKALLOC(gk_i64, int64_t)
-GK_MKALLOC(gk_z,   ssize_t)
-GK_MKALLOC(gk_f,   float)
-GK_MKALLOC(gk_d,   double)
-GK_MKALLOC(gk_idx, gk_idx_t)
+GK_MKALLOC(gk_c,    char)
+GK_MKALLOC(gk_i,    int)
+GK_MKALLOC(gk_i8,   int8_t)
+GK_MKALLOC(gk_i16,  int16_t)
+GK_MKALLOC(gk_i32,  int32_t)
+GK_MKALLOC(gk_i64,  int64_t)
+GK_MKALLOC(gk_ui8,  uint8_t)
+GK_MKALLOC(gk_ui16, uint16_t)
+GK_MKALLOC(gk_ui32, uint32_t)
+GK_MKALLOC(gk_ui64, uint64_t)
+GK_MKALLOC(gk_z,    ssize_t)
+GK_MKALLOC(gk_zu,   size_t)
+GK_MKALLOC(gk_f,    float)
+GK_MKALLOC(gk_d,    double)
+GK_MKALLOC(gk_idx,  gk_idx_t)
 
 GK_MKALLOC(gk_ckv,   gk_ckv_t)
 GK_MKALLOC(gk_ikv,   gk_ikv_t)
+GK_MKALLOC(gk_i8kv,  gk_i8kv_t)
+GK_MKALLOC(gk_i16kv, gk_i16kv_t)
 GK_MKALLOC(gk_i32kv, gk_i32kv_t)
 GK_MKALLOC(gk_i64kv, gk_i64kv_t)
 GK_MKALLOC(gk_zkv,   gk_zkv_t)
+GK_MKALLOC(gk_zukv,  gk_zukv_t)
 GK_MKALLOC(gk_fkv,   gk_fkv_t)
 GK_MKALLOC(gk_dkv,   gk_dkv_t)
 GK_MKALLOC(gk_skv,   gk_skv_t)
@@ -52,7 +62,7 @@ GK_MKALLOC(gk_idxkv, gk_idxkv_t)
 /*************************************************************************/
 void gk_AllocMatrix(void ***r_matrix, size_t elmlen, size_t ndim1, size_t ndim2)
 {
-  gk_idx_t i, j;
+  size_t i, j;
   void **matrix;
 
   *r_matrix = NULL;
@@ -62,7 +72,7 @@ void gk_AllocMatrix(void ***r_matrix, size_t elmlen, size_t ndim1, size_t ndim2)
 
   for (i=0; i<ndim1; i++) {
     if ((matrix[i] = (void *)gk_malloc(ndim2*elmlen, "gk_AllocMatrix: matrix[i]")) == NULL) {
-      for (j=0; j<i; j++)
+      for (j=0; j<i; j++) 
         gk_free((void **)&matrix[j], LTERM);
       return;
     }
@@ -78,22 +88,22 @@ void gk_AllocMatrix(void ***r_matrix, size_t elmlen, size_t ndim1, size_t ndim2)
 /*************************************************************************/
 void gk_FreeMatrix(void ***r_matrix, size_t ndim1, size_t ndim2)
 {
-  gk_idx_t i;
+  size_t i;
   void **matrix;
 
   if ((matrix = *r_matrix) == NULL)
     return;
 
-  for (i=0; i<ndim1; i++)
+  for (i=0; i<ndim1; i++) 
     gk_free((void **)&matrix[i], LTERM);
 
-  gk_free((void **)r_matrix, LTERM);
+  gk_free((void **)r_matrix, LTERM); 
 
 }
 
 
 /*************************************************************************/
-/*! This function initializes tracking of heap allocations.
+/*! This function initializes tracking of heap allocations. 
 */
 /*************************************************************************/
 int gk_malloc_init()
@@ -149,18 +159,13 @@ void *gk_malloc(size_t nbytes, char *msg)
   if (ptr == NULL) {
     fprintf(stderr, "   Current memory used:  %10zu bytes\n", gk_GetCurMemoryUsed());
     fprintf(stderr, "   Maximum memory used:  %10zu bytes\n", gk_GetMaxMemoryUsed());
-    gk_errexit(SIGMEM, "***Memory allocation failed for %s. Requested size: %zu bytes",
+    gk_errexit(SIGMEM, "***Memory allocation failed for %s. Requested size: %zu bytes", 
         msg, nbytes);
     return NULL;
   }
 
   /* add this memory allocation */
   if (gkmcore != NULL) gk_gkmcoreAdd(gkmcore, GK_MOPT_HEAP, nbytes, ptr);
-
-  /* zero-out the allocated space */
-#ifndef NDEBUG
-  memset(ptr, 0, nbytes);
-#endif
 
   return ptr;
 }
@@ -184,7 +189,7 @@ void *gk_realloc(void *oldptr, size_t nbytes, char *msg)
   if (ptr == NULL) {
     fprintf(stderr, "   Maximum memory used: %10zu bytes\n", gk_GetMaxMemoryUsed());
     fprintf(stderr, "   Current memory used: %10zu bytes\n", gk_GetCurMemoryUsed());
-    gk_errexit(SIGMEM, "***Memory realloc failed for %s. " "Requested size: %zu bytes",
+    gk_errexit(SIGMEM, "***Memory realloc failed for %s. " "Requested size: %zu bytes", 
         msg, nbytes);
     return NULL;
   }
@@ -197,7 +202,7 @@ void *gk_realloc(void *oldptr, size_t nbytes, char *msg)
 
 
 /*************************************************************************
-* This function is my wrapper around free, allows multiple pointers
+* This function is my wrapper around free, allows multiple pointers    
 **************************************************************************/
 void gk_free(void **ptr1,...)
 {
@@ -208,7 +213,8 @@ void gk_free(void **ptr1,...)
     free(*ptr1);
 
     /* remove this memory de-allocation */
-    if (gkmcore != NULL) gk_gkmcoreDel(gkmcore, *ptr1);
+    if (gkmcore != NULL) 
+      gk_gkmcoreDel(gkmcore, *ptr1);
   }
   *ptr1 = NULL;
 
@@ -218,12 +224,13 @@ void gk_free(void **ptr1,...)
       free(*ptr);
 
       /* remove this memory de-allocation */
-      if (gkmcore != NULL) gk_gkmcoreDel(gkmcore, *ptr);
+      if (gkmcore != NULL) 
+        gk_gkmcoreDel(gkmcore, *ptr);
     }
     *ptr = NULL;
   }
   va_end(plist);
-}
+}          
 
 
 /*************************************************************************
@@ -240,7 +247,7 @@ size_t gk_GetCurMemoryUsed()
 
 
 /*************************************************************************
-* This function returns the maximum ammount of dynamically allocated
+* This function returns the maximum ammount of dynamically allocated 
 * memory that was used by the system
 **************************************************************************/
 size_t gk_GetMaxMemoryUsed()
@@ -249,4 +256,52 @@ size_t gk_GetMaxMemoryUsed()
     return 0;
   else
     return gkmcore->max_hallocs;
+}
+
+
+/*************************************************************************/
+/*! This function returns the VmSize and VmRSS of the calling process. */
+/*************************************************************************/
+void gk_GetVMInfo(size_t *vmsize, size_t *vmrss)
+{
+  FILE *fp;
+  char fname[1024];
+
+  sprintf(fname, "/proc/%d/statm", getpid());
+  fp = gk_fopen(fname, "r", "proc/pid/statm");
+  if (fscanf(fp, "%zu %zu", vmsize, vmrss) != 2)
+    errexit("Failed to read to values from %s\n", fname);
+  gk_fclose(fp);
+
+  /*
+  *vmsize *= sysconf(_SC_PAGESIZE);
+  *vmrss  *= sysconf(_SC_PAGESIZE);
+  */
+
+  return;
+}
+
+
+/*************************************************************************/
+/*! This function returns the peak virtual memory of the calling process
+    by reading the VmPeak field in /proc/self/status . */
+/*************************************************************************/
+size_t gk_GetProcVmPeak()
+{
+  FILE *fp;
+  char line[128];
+  size_t vmpeak=0;
+
+  if (gk_fexists("/proc/self/status")) {
+    fp = gk_fopen("/proc/self/status", "r", "proc/self/status");
+    while (fgets(line, 128, fp) != NULL) {
+      if (strncmp(line, "VmPeak:", 7) == 0) {
+        vmpeak = atoll(line+8)*1024;
+        break;
+      }
+    }
+    gk_fclose(fp);
+  }
+
+  return vmpeak;
 }

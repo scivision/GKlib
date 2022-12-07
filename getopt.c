@@ -34,7 +34,7 @@ So, do read the documentation here.
 /*************************************************************************/
 
 
-#include "GKlib.h"
+#include <GKlib.h>
 
 /*************************************************************************/
 /* Local function prototypes */
@@ -342,6 +342,7 @@ static int gk_getopt_internal(int argc, char **argv, char *optstring,
   if (gk_optind == 0 || !gk_getopt_initialized) {
     if (gk_optind == 0)
       gk_optind = 1;	/* Don't scan ARGV[0], the program name.  */
+
     optstring = gk_getopt_initialize (argc, argv, optstring);
     gk_getopt_initialized = 1;
   }

@@ -1,12 +1,21 @@
-# Where the header files reside
-#include_directories(../)
-
-# Build program.
 add_executable(strings strings.c)
 add_executable(gksort gksort.c)
 add_executable(fis fis.c)
-add_executable(rw rw.c)
+add_executable(gkrw rw.c)
 add_executable(gkgraph gkgraph.c)
-foreach(prog strings gksort fis rw gkgraph)
-  target_link_libraries(${prog} GKlib)
+add_executable(csrcnv csrcnv.c)
+add_executable(grKx grKx.c)
+add_executable(m2mnbrs m2mnbrs.c)
+add_executable(cmpnbrs cmpnbrs.c)
+add_executable(splatt2svd splatt2svd.c)
+add_executable(gkuniq gkuniq.c)
+
+foreach(prog IN ITEMS
+    strings gksort fis gkrw gkgraph csrcnv grKx m2mnbrs cmpnbrs splatt2svd gkuniq)
+  target_link_libraries(${prog} PRIVATE GKlib)
+  if(NOT prog MATCHES "cmpnbrs|m2mnbrs|splatt2svd")
+    add_test(NAME ${prog} COMMAND ${prog})
+  endif()
 endforeach(prog)
+
+install(TARGETS csrcnv)

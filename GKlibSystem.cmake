@@ -8,122 +8,133 @@ option(ASSERT "turn asserts on" OFF)
 option(ASSERT2 "additional assertions" OFF)
 option(DEBUG "add debugging support" OFF)
 option(GPROF "add gprof support" OFF)
+option(VALGRIND "add valgrind support" OFF)
 option(OPENMP "enable OpenMP support" OFF)
 option(PCRE "enable PCRE support" OFF)
 option(GKREGEX "enable GKREGEX support" OFF)
 option(GKRAND "enable GKRAND support" OFF)
+option(NO_X86 "enable NO_X86 support")
+
+set(CMAKE_C_STANDARD 99)
+
+if(CMAKE_SYSTEM_PROCESSOR MATCHES "arm|ARM")
+  # reportedly not every x86 system defines so in CMAKE_SYSTEM_PROCESSOR
+  set(NO_X86 true)
+endif()
 
 # Add compiler flags.
 if(MSVC)
-  set(GKlib_COPTS)
-  set(GKlib_COPTIONS "-DWIN32 -DMSC -D_CRT_SECURE_NO_DEPRECATE -DUSE_GKREGEX")
+  add_compile_options(/Ox)
+  add_compile_definitions(WIN32 MSC _CRT_SECURE_NO_DEPRECATE USE_GKREGEX)
 elseif(MINGW)
-  set(GKlib_COPTS "-DUSE_GKREGEX")
+  add_compile_definitions(USE_GKREGEX)
 else()
-  set(GKlib_COPTS)
-  set(GKlib_COPTIONS "-DLINUX -D_FILE_OFFSET_BITS=64")
-endif(MSVC)
+  add_compile_definitions(LINUX _FILE_OFFSET_BITS=64)
+endif()
+
 if(CYGWIN)
-  set(GKlib_COPTIONS "${GKlib_COPTIONS} -DCYGWIN")
+  add_compile_definitions(CYGWIN)
 endif(CYGWIN)
-if(CMAKE_COMPILER_IS_GNUCC)
-# GCC opts.
-  set(GKlib_COPTIONS "${GKlib_COPTIONS} -fno-strict-aliasing")
+
+if(CMAKE_C_COMPILER_ID STREQUAL "GNU")
+  add_compile_options(-fno-strict-aliasing)
+  if(VALGRIND)
+    add_compile_options(-mtune=generic)
+  else()
+    # add_compile_options(-march=native)
+  endif(VALGRIND)
   if(NOT MINGW)
-      set(GKlib_COPTIONS "${GKlib_COPTIONS} -fPIC")
+    set(CMAKE_POSITION_INDEPENDENT_CODE true)
   endif(NOT MINGW)
 # GCC warnings.
-  set(GKlib_COPTIONS "${GKlib_COPTIONS} -Wall -pedantic -Wno-unused-but-set-variable -Wno-unused-variable -Wno-unknown-pragmas")
-elseif(${CMAKE_C_COMPILER_ID} MATCHES "Sun")
+  add_compile_options(-Werror -Wall -pedantic -Wno-unused-function -Wno-unused-but-set-variable -Wno-unused-variable -Wno-unknown-pragmas -Wno-unused-label)
+elseif(CMAKE_C_COMPILER_ID STREQUAL "Sun")
 # Sun insists on -xc99.
-  set(GKlib_COPTIONS "${GKlib_COPTIONS} -xc99")
-endif(CMAKE_COMPILER_IS_GNUCC)
+  add_compile_options(-xc99)
+endif()
+
+# Intel compiler
+if(CMAKE_C_COMPILER_ID MATCHES "^Intel")
+
+endif()
 
 # Find OpenMP if it is requested.
 if(OPENMP)
-  include(FindOpenMP)
-  if(OPENMP_FOUND)
-    set(GKlib_COPTIONS "${GKlib_COPTIONS} -D__OPENMP__ ${OpenMP_C_FLAGS}")
+  find_package(OpenMP)
+  if(OpenMP_FOUND)
+    add_compile_definitions(__OPENMP__)
+    add_compile_options(${OpenMP_C_FLAGS})
   else()
     message(WARNING "OpenMP was requested but support was not found")
-  endif(OPENMP_FOUND)
+  endif()
 endif(OPENMP)
 
+# Set the CPU type
+if(NO_X86)
+  add_compile_definitions(NO_X86=${NO_X86})
+endif(NO_X86)
 
 # Add various definitions.
 if(GDB)
-  set(GKlib_COPTS "${GKlib_COPTS} -g")
-  set(GKlib_COPTIONS "${GKlib_COPTIONS} -Werror")
+  add_compile_options(-g -Werror)
 endif(GDB)
 
-
-if(DEBUG)
-  set(GKlib_COPTS "-g")
-  set(GKlib_COPTIONS "${GKlib_COPTIONS} -DDEBUG")
-endif(DEBUG)
-
 if(GPROF)
-  set(GKlib_COPTS "-pg")
+  add_compile_options(-pg)
 endif(GPROF)
 
 if(NOT ASSERT)
-  set(GKlib_COPTIONS "${GKlib_COPTIONS} -DNDEBUG")
+  add_compile_definitions(NDEBUG)
 endif(NOT ASSERT)
 
 if(NOT ASSERT2)
-  set(GKlib_COPTIONS "${GKlib_COPTIONS} -DNDEBUG2")
+  add_compile_definitions(NDEBUG2)
 endif(NOT ASSERT2)
 
 
 # Add various options
 if(PCRE)
-  set(GKlib_COPTIONS "${GKlib_COPTIONS} -D__WITHPCRE__")
+  add_compile_definitions(__WITHPCRE__)
 endif(PCRE)
 
 if(GKREGEX)
-  set(GKlib_COPTIONS "${GKlib_COPTIONS} -DUSE_GKREGEX")
+  add_compile_definitions(USE_GKREGEX)
 endif(GKREGEX)
 
 if(GKRAND)
-  set(GKlib_COPTIONS "${GKlib_COPTIONS} -DUSE_GKRAND")
+  add_compile_definitions(USE_GKRAND)
 endif(GKRAND)
 
 
 # Check for features.
 check_include_file(execinfo.h HAVE_EXECINFO_H)
 if(HAVE_EXECINFO_H)
-  set(GKlib_COPTIONS "${GKlib_COPTIONS} -DHAVE_EXECINFO_H")
+  add_compile_definitions(HAVE_EXECINFO_H)
 endif(HAVE_EXECINFO_H)
 
 check_function_exists(getline HAVE_GETLINE)
 if(HAVE_GETLINE)
-  set(GKlib_COPTIONS "${GKlib_COPTIONS} -DHAVE_GETLINE")
+  add_compile_definitions(HAVE_GETLINE)
 endif(HAVE_GETLINE)
 
 
 # Custom check for TLS.
 if(MSVC)
-   set(GKlib_COPTIONS "${GKlib_COPTIONS} -D__thread=__declspec(thread)")
-else()
+  add_compile_definitions(__thread=__declspec(thread))
+
   # This if checks if that value is cached or not.
-  if("${HAVE_THREADLOCALSTORAGE}" MATCHES "^${HAVE_THREADLOCALSTORAGE}$")
+  if(NOT DEFINED HAVE_THREADLOCALSTORAGE)
+    message(CHECK_START "checking for thread-local storage")
     try_compile(HAVE_THREADLOCALSTORAGE
       ${CMAKE_BINARY_DIR}
       ${GKLIB_PATH}/conf/check_thread_storage.c)
     if(HAVE_THREADLOCALSTORAGE)
-      message(STATUS "checking for thread-local storage - found")
+      message(CHECK_PASS "found")
     else()
-      message(STATUS "checking for thread-local storage - not found")
+      message(CHECK_FAIL "not found")
     endif()
   endif()
   if(NOT HAVE_THREADLOCALSTORAGE)
-    set(GKlib_COPTIONS "${GKlib_COPTIONS} -D__thread=")
+    add_compile_definitions(__thread=)
   endif()
 endif()
-
-# Finally set the official C flags.
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${GKlib_COPTIONS} ${GKlib_COPTS}")
-
-# Find GKlib sources.
-file(GLOB GKlib_sources ${GKLIB_PATH}/*.c)
-file(GLOB GKlib_includes ${GKLIB_PATH}/*.h)
