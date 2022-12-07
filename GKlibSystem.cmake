@@ -47,7 +47,10 @@ if(CMAKE_C_COMPILER_ID STREQUAL "GNU")
     set(CMAKE_POSITION_INDEPENDENT_CODE true)
   endif(NOT MINGW)
 # GCC warnings.
-  add_compile_options(-Werror -Wall -pedantic -Wno-unused-function -Wno-unused-but-set-variable -Wno-unused-variable -Wno-unknown-pragmas -Wno-unused-label)
+  add_compile_options(-Wall -Wpedantic
+  -Wno-unused-function -Wno-unused-but-set-variable
+  -Wno-unused-variable -Wno-unknown-pragmas -Wno-unused-label
+  )
 elseif(CMAKE_C_COMPILER_ID STREQUAL "Sun")
 # Sun insists on -xc99.
   add_compile_options(-xc99)
