@@ -6,14 +6,7 @@
   "name": "default",
   "binaryDir": "${sourceDir}/build",
   "cacheVariables": {
-    "CMAKE_COMPILE_WARNING_AS_ERROR": true
-  }
-},
-{
-  "name": "msvc", "inherits": "default",
-  "generator": "Visual Studio 17 2022",
-  "cacheVariables": {
-    "CMAKE_COMPILE_WARNING_AS_ERROR": false
+    "BUILD_TESTING": true
   }
 }
 ],
@@ -26,11 +19,6 @@
     "name": "release",
     "configurePreset": "default",
     "configuration": "Release"
-  },
-  {
-    "name": "msvc-debug",
-    "configurePreset": "msvc",
-    "configuration": "Debug"
   }
 ],
 "testPresets": [
@@ -51,11 +39,6 @@
 {
   "name": "release", "inherits": "default",
   "configuration": "Release"
-},
-{
-  "name": "msvc-debug", "inherits": "default",
-  "configurePreset": "msvc",
-  "configuration": "Debug"
 }
 ],
 "workflowPresets": [
@@ -73,23 +56,6 @@
       {
         "type": "test",
         "name": "default"
-      }
-    ]
-  },
-  {
-    "name": "msvc",
-    "steps": [
-      {
-        "type": "configure",
-        "name": "msvc"
-      },
-      {
-        "type": "build",
-        "name": "msvc-debug"
-      },
-      {
-        "type": "test",
-        "name": "msvc-debug"
       }
     ]
   },

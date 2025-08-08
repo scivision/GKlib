@@ -1,4 +1,8 @@
-cmake_minimum_required(VERSION 3.14...3.28)
+cmake_minimum_required(VERSION 3.16...4.1)
+
+if(NOT CMAKE_BUILD_TYPE AND NOT DEFINED ENV{CMAKE_BUILD_TYPE})
+  set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type")
+endif()
 
 project(GKlib LANGUAGES C
 VERSION 1.0.0
@@ -6,9 +10,11 @@ VERSION 1.0.0
 
 enable_testing()
 
-option(BUILD_TESTING "Build tests" ON)
+include(GNUInstallDirs)
 
-option(BUILD_SHARED_LIBS "Build shared libraries (.dll/.so) instead of static ones (.lib/.a)" OFF)
+option(BUILD_TESTING "Build tests")
+
+option(BUILD_SHARED_LIBS "Build shared libraries (.dll/.so) instead of static ones (.lib/.a)")
 
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT AND GKlib_IS_TOP_LEVEL)
   set(CMAKE_INSTALL_PREFIX "${PROJECT_BINARY_DIR}/local" CACHE PATH "install prefix" FORCE)
@@ -34,7 +40,7 @@ error.c		gk_util.c	itemsets.c	rw.c		tokenizer.c)
 add_library(GKlib ${GKlib_sources} ${win32_sources})
 target_include_directories(GKlib PUBLIC
 $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-$<INSTALL_INTERFACE:include>
+$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 target_link_libraries(GKlib PRIVATE
 $<$<BOOL:${UNIX}>:m>

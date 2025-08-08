@@ -7,6 +7,13 @@ on:
       - "**.cmake"
       - "**/CMakeLists.txt"
       - ".github/workflows/ci.yml"
+  workflow_dispatch:
+
+# avoid wasted runs
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 
 jobs:
 
@@ -20,15 +27,16 @@ jobs:
     timeout-minutes: 5
 
     steps:
-    - uses: actions/checkout@v4
+    - &checkout
+      uses: actions/checkout@v4
 
-    - run: cmake --workflow --preset default
+    - run: cmake --workflow default
 
   windows_msvc:
     runs-on: windows-latest
     timeout-minutes: 5
 
     steps:
-    - uses: actions/checkout@v4
+    - *checkout
 
-    - run: cmake --workflow --preset msvc
+    - run: cmake --workflow release
