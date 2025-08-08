@@ -23,7 +23,7 @@ if(CYGWIN)
 endif()
 
 if(CMAKE_C_COMPILER_ID STREQUAL "GNU")
-  list(APPEND GKlib_COPTS -fno-strict-aliasing -Werror -Wall -pedantic -Wno-unused-function -Wno-unused-but-set-variable -Wno-unused-variable -Wno-unknown-pragmas -Wno-unused-label)
+  list(APPEND GKlib_COPTS -fno-strict-aliasing -Wall -Wno-unused-function -Wno-unused-but-set-variable -Wno-unused-variable -Wno-unknown-pragmas -Wno-unused-label)
 endif()
 
 if(UNIX)
