@@ -47,8 +47,7 @@ $<$<BOOL:${UNIX}>:m>
 $<$<BOOL:${OPENMP}>:OpenMP::OpenMP_C>
 )
 
-add_library(GKlib::GKlib INTERFACE IMPORTED GLOBAL)
-target_link_libraries(GKlib::GKlib INTERFACE GKlib)
+add_library(GKlib::GKlib ALIAS GKlib)
 
 if(BUILD_TESTING)
 add_subdirectory(test)
