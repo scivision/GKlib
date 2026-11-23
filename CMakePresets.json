@@ -64,7 +64,8 @@
     "name": "shared",
     "steps": [
       { "type": "configure", "name": "shared" },
-      { "type": "build", "name": "shared" }
+      { "type": "build", "name": "shared" },
+      { "type": "test", "name": "shared" }
     ]
   },
   {
