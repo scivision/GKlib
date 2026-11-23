@@ -22,12 +22,14 @@
   "name": "msvc", "inherits": "default",
   "generator": "Visual Studio 18 2026",
   "binaryDir": "build-${presetName}"
-}
+},
+{ "name": "msvc-shared", "inherits": "msvc", "cacheVariables": { "BUILD_SHARED_LIBS": true } }
 ],
 "buildPresets": [
   { "name": "default", "configurePreset": "default", "configuration": "Release" },
   { "name": "shared", "configurePreset": "shared", "inherits": "default" },
-  { "name": "msvc", "configurePreset": "msvc", "inherits": "default", "configuration": "Release" }
+  { "name": "msvc", "configurePreset": "msvc", "inherits": "default", "configuration": "Release" },
+  { "name": "msvc-shared", "configurePreset": "msvc-shared", "inherits": "default", "configuration": "Release" }
 ],
 "testPresets": [
 {
@@ -47,10 +49,8 @@
   }
 },
 { "name": "shared", "configurePreset": "shared", "inherits": "default" },
-{
-  "name": "msvc", "inherits": "default",
-  "configurePreset": "msvc", "configuration": "Release"
-}
+{ "name": "msvc", "inherits": "default", "configurePreset": "msvc", "configuration": "Release" },
+{ "name": "msvc-shared", "inherits": "msvc", "configurePreset": "msvc-shared" }
 ],
 "workflowPresets": [
   {
@@ -82,6 +82,14 @@
       { "type": "configure", "name": "msvc" },
       { "type": "build", "name": "msvc" },
       { "type": "test", "name": "msvc" }
+    ]
+  },
+  {
+    "name": "msvc-shared",
+    "steps": [
+      { "type": "configure", "name": "msvc-shared" },
+      { "type": "build", "name": "msvc-shared" },
+      { "type": "test", "name": "msvc-shared" }
     ]
   }
 ]

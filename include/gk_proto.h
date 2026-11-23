@@ -139,6 +139,7 @@ void gk_set_exit_on_error(int value);
 void errexit(char *,...);
 void gk_errexit(int signum, char *,...);
 int gk_sigtrap(void);
+jmp_buf *gk_sigcatch_buf(void);
 int gk_siguntrap(void);
 void gk_sigthrow(int signum);
 void gk_SetSignalHandlers(void);

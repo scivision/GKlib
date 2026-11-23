@@ -50,7 +50,7 @@
  * gracefull library exit macro
  *-------------------------------------------------------------*/
 #define GKSETJMP() (setjmp(gk_return_to_entry))
-#define gk_sigcatch() (setjmp(gk_jbufs[gk_cur_jbufs]))
+#define gk_sigcatch() (setjmp(*gk_sigcatch_buf()))
  
 
 /*-------------------------------------------------------------

@@ -108,6 +108,12 @@ int gk_sigtrap(void)
   return 1;
 }
   
+/* Keep setjmp in the caller while accessing the buffer in GKlib's TLS. */
+jmp_buf *gk_sigcatch_buf(void)
+{
+  return &gk_jbufs[gk_cur_jbufs];
+}
+
 
 /***************************************************************************/
 /*! This function sets the handlers for the signals to their default handlers
