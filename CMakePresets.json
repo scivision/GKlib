@@ -39,10 +39,11 @@
     "verbosity": "verbose"
   },
   "execution": {
+    "interactiveDebugging": false,
     "noTestsAction": "error",
     "scheduleRandom": true,
     "stopOnFailure": false,
-    "timeout": 60
+    "timeout": 30
   }
 },
 { "name": "shared", "configurePreset": "shared", "inherits": "default" },
