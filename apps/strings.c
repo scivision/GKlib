@@ -67,7 +67,7 @@ void test_strstr_replace()
 
 
 
-int main()
+int main(void)
 {
   test_strstr_replace();
 
@@ -79,4 +79,3 @@ int main()
   }
 */
 }
-
