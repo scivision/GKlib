@@ -42,4 +42,9 @@ jobs:
     runs-on: windows-latest
     steps:
     - *checkout
-    - run: cmake --workflow msvc
+
+    - name: static build
+      run: cmake --workflow msvc
+
+    - name: shared build
+      run: cmake --workflow msvc-shared
