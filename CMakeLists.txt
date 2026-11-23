@@ -31,16 +31,14 @@ set(GKLIB_PATH ${PROJECT_SOURCE_DIR})
 
 include(GKlibSystem.cmake)
 
-set(win32_inc $<$<BOOL:${MSVC}>:${PROJECT_SOURCE_DIR}/win32>)
-set(win32_sources $<$<BOOL:${MSVC}>:win32/adapt.c>)
-
 set(GKlib_sources src/b64.c	src/evaluate.c src/mcore.c src/seq.c
 src/blas.c src/fkvkselect.c	src/graph.c src/memory.c src/sort.c
 src/cache.c src/fs.c src/htable.c	src/pqueue.c src/string.c
 src/csr.c	src/io.c src/random.c src/timers.c
-src/error.c src/gk_util.c	src/itemsets.c src/rw.c src/tokenizer.c)
+src/error.c src/gk_util.c	src/itemsets.c src/rw.c src/tokenizer.c
+)
 
-add_library(GKlib ${GKlib_sources} ${win32_sources})
+add_library(GKlib ${GKlib_sources})
 target_include_directories(GKlib PUBLIC
 $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>

@@ -1,10 +1,10 @@
 /*!
 \file  memory.c
-\brief This file contains various allocation routines 
+\brief This file contains various allocation routines
 
-The allocation routines included are for 1D and 2D arrays of the 
-most datatypes that GKlib support. Many of these routines are 
-defined with the help of the macros in gk_memory.h. These macros 
+The allocation routines included are for 1D and 2D arrays of the
+most datatypes that GKlib support. Many of these routines are
+defined with the help of the macros in gk_memory.h. These macros
 can be used to define other memory allocation routines.
 
 \date   Started 4/3/2007
@@ -14,6 +14,12 @@ can be used to define other memory allocation routines.
 
 
 #include <GKlib.h>
+
+#ifdef _MSC_VER
+#include <process.h> // for getpid()
+#else
+#include <unistd.h> // for getpid()
+#endif
 
 /* This is for the global mcore that tracks all heap allocations */
 static __thread gk_mcore_t *gkmcore = NULL;
@@ -72,7 +78,7 @@ void gk_AllocMatrix(void ***r_matrix, size_t elmlen, size_t ndim1, size_t ndim2)
 
   for (i=0; i<ndim1; i++) {
     if ((matrix[i] = (void *)gk_malloc(ndim2*elmlen, "gk_AllocMatrix: matrix[i]")) == NULL) {
-      for (j=0; j<i; j++) 
+      for (j=0; j<i; j++)
         gk_free((void **)&matrix[j], LTERM);
       return;
     }
@@ -94,16 +100,16 @@ void gk_FreeMatrix(void ***r_matrix, size_t ndim1, size_t ndim2)
   if ((matrix = *r_matrix) == NULL)
     return;
 
-  for (i=0; i<ndim1; i++) 
+  for (i=0; i<ndim1; i++)
     gk_free((void **)&matrix[i], LTERM);
 
-  gk_free((void **)r_matrix, LTERM); 
+  gk_free((void **)r_matrix, LTERM);
 
 }
 
 
 /*************************************************************************/
-/*! This function initializes tracking of heap allocations. 
+/*! This function initializes tracking of heap allocations.
 */
 /*************************************************************************/
 int gk_malloc_init(void)
@@ -159,7 +165,7 @@ void *gk_malloc(size_t nbytes, char *msg)
   if (ptr == NULL) {
     fprintf(stderr, "   Current memory used:  %10zu bytes\n", gk_GetCurMemoryUsed());
     fprintf(stderr, "   Maximum memory used:  %10zu bytes\n", gk_GetMaxMemoryUsed());
-    gk_errexit(SIGMEM, "***Memory allocation failed for %s. Requested size: %zu bytes", 
+    gk_errexit(SIGMEM, "***Memory allocation failed for %s. Requested size: %zu bytes",
         msg, nbytes);
     return NULL;
   }
@@ -189,7 +195,7 @@ void *gk_realloc(void *oldptr, size_t nbytes, char *msg)
   if (ptr == NULL) {
     fprintf(stderr, "   Maximum memory used: %10zu bytes\n", gk_GetMaxMemoryUsed());
     fprintf(stderr, "   Current memory used: %10zu bytes\n", gk_GetCurMemoryUsed());
-    gk_errexit(SIGMEM, "***Memory realloc failed for %s. " "Requested size: %zu bytes", 
+    gk_errexit(SIGMEM, "***Memory realloc failed for %s. " "Requested size: %zu bytes",
         msg, nbytes);
     return NULL;
   }
@@ -202,7 +208,7 @@ void *gk_realloc(void *oldptr, size_t nbytes, char *msg)
 
 
 /*************************************************************************
-* This function is my wrapper around free, allows multiple pointers    
+* This function is my wrapper around free, allows multiple pointers
 **************************************************************************/
 void gk_free(void **ptr1,...)
 {
@@ -213,7 +219,7 @@ void gk_free(void **ptr1,...)
     free(*ptr1);
 
     /* remove this memory de-allocation */
-    if (gkmcore != NULL) 
+    if (gkmcore != NULL)
       gk_gkmcoreDel(gkmcore, *ptr1);
   }
   *ptr1 = NULL;
@@ -224,13 +230,13 @@ void gk_free(void **ptr1,...)
       free(*ptr);
 
       /* remove this memory de-allocation */
-      if (gkmcore != NULL) 
+      if (gkmcore != NULL)
         gk_gkmcoreDel(gkmcore, *ptr);
     }
     *ptr = NULL;
   }
   va_end(plist);
-}          
+}
 
 
 /*************************************************************************
@@ -247,7 +253,7 @@ size_t gk_GetCurMemoryUsed(void)
 
 
 /*************************************************************************
-* This function returns the maximum ammount of dynamically allocated 
+* This function returns the maximum ammount of dynamically allocated
 * memory that was used by the system
 **************************************************************************/
 size_t gk_GetMaxMemoryUsed(void)
