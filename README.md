@@ -12,3 +12,6 @@ cmake --workflow --preset default
 
 Consumers using `gk_sigcatch()` must be rebuilt with matching GKlib headers and
 library; the macro accesses the active thread-local jump buffer through GKlib.
+
+On Windows, consumers linking the shared library without the CMake targets
+must define `GKLIB_GETOPT_DLL` when including GKlib headers.

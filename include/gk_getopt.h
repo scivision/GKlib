@@ -12,10 +12,16 @@
 
 
 /* Externals from getopt.c */
-extern char *gk_optarg;
-extern int gk_optind;
-extern int gk_opterr;
-extern int gk_optopt;
+#if defined(_WIN32) && defined(GKLIB_GETOPT_DLL)
+#define GK_GETOPT_DATA __declspec(dllimport)
+#else
+#define GK_GETOPT_DATA
+#endif
+extern GK_GETOPT_DATA char *gk_optarg;
+extern GK_GETOPT_DATA int gk_optind;
+extern GK_GETOPT_DATA int gk_opterr;
+extern GK_GETOPT_DATA int gk_optopt;
+#undef GK_GETOPT_DATA
 
 
 /*! \brief The structure that stores the information about the command-line options 

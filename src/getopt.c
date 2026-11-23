@@ -53,7 +53,7 @@ This variable is set by getopt to point at the value of the option argument,
 for those options that accept arguments.
 */
 /*************************************************************************/
-char *gk_optarg;
+char *gk_optarg = NULL;
 
 
 /*************************************************************************/

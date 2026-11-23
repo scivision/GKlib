@@ -21,7 +21,8 @@
 {
   "name": "msvc", "inherits": "default",
   "generator": "Visual Studio 18 2026",
-  "binaryDir": "build-${presetName}"
+  "binaryDir": "build-${presetName}",
+  "installDir": "${fileDir}/build-${presetName}/local"
 },
 { "name": "msvc-shared", "inherits": "msvc", "cacheVariables": { "BUILD_SHARED_LIBS": true } }
 ],
@@ -45,7 +46,7 @@
     "noTestsAction": "error",
     "scheduleRandom": true,
     "stopOnFailure": false,
-    "timeout": 30
+    "timeout": 15
   }
 },
 { "name": "shared", "configurePreset": "shared", "inherits": "default" },

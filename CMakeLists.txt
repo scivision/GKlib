@@ -60,6 +60,9 @@ target_include_directories(GKlib_vendor PRIVATE include)
 target_link_libraries(GKlib PUBLIC GKlib_vendor)
 if(WIN32)
   set_target_properties(GKlib GKlib_vendor PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS ON)
+  if(BUILD_SHARED_LIBS)
+    target_compile_definitions(GKlib_vendor INTERFACE GKLIB_GETOPT_DLL)
+  endif()
 endif()
 if(CMAKE_VERSION VERSION_GREATER_EQUAL 4.1)
   set_target_properties(GKlib_vendor PROPERTIES SPDX_LICENSE "LGPL-2.1-or-later")
@@ -67,10 +70,17 @@ endif()
 
 if(GKlib_BUILD_TESTING)
   enable_testing()
+
   add_executable(test_sigcatch test/sigcatch.c)
   target_link_libraries(test_sigcatch PRIVATE GKlib)
   add_test(NAME sigcatch COMMAND test_sigcatch)
-  set_tests_properties(sigcatch PROPERTIES ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:$<TARGET_FILE_DIR:GKlib>")
+
+  add_executable(test_getopt test/getopt.c)
+  target_link_libraries(test_getopt PRIVATE GKlib)
+  add_test(NAME getopt COMMAND test_getopt)
+
+  set_tests_properties(sigcatch getopt PROPERTIES
+    ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:$<TARGET_FILE_DIR:GKlib>")
 endif()
 
 add_subdirectory(apps)
