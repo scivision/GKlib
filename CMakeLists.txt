@@ -45,9 +45,9 @@ target_include_directories(GKlib PUBLIC
 $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
-target_link_libraries(GKlib PRIVATE
-$<$<BOOL:${UNIX}>:m>
-$<$<BOOL:${OPENMP}>:OpenMP::OpenMP_C>
+target_link_libraries(GKlib
+PUBLIC $<$<BOOL:${UNIX}>:m>
+PRIVATE $<$<BOOL:${OPENMP}>:OpenMP::OpenMP_C>
 )
 if(CMAKE_VERSION VERSION_GREATER_EQUAL 4.1)
   set_target_properties(GKlib PROPERTIES SPDX_LICENSE "Apache-2.0 AND LGPL-2.1-or-later AND BSD-3-Clause")

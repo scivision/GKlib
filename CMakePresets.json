@@ -6,8 +6,10 @@
   "name": "default",
   "binaryDir": "build",
   "generator": "Ninja",
+  "installDir": "${fileDir}/build/local",
   "cacheVariables": {
-    "GKlib_BUILD_TESTING": true
+    "GKlib_BUILD_TESTING": true,
+    "CMAKE_BUILD_TYPE": "Release"
   }
 },
 {
@@ -15,11 +17,17 @@
   "cacheVariables": {
     "BUILD_SHARED_LIBS": true
   }
+},
+{
+  "name": "msvc", "inherits": "default",
+  "generator": "Visual Studio 18 2026",
+  "binaryDir": "build-${presetName}"
 }
 ],
 "buildPresets": [
   { "name": "default", "configurePreset": "default", "configuration": "Release" },
-  { "name": "shared", "configurePreset": "shared", "inherits": "default" }
+  { "name": "shared", "configurePreset": "shared", "inherits": "default" },
+  { "name": "msvc", "configurePreset": "msvc", "inherits": "default", "configuration": "Release" }
 ],
 "testPresets": [
 {
@@ -37,7 +45,11 @@
     "timeout": 60
   }
 },
-{ "name": "shared", "configurePreset": "shared", "inherits": "default" }
+{ "name": "shared", "configurePreset": "shared", "inherits": "default" },
+{
+  "name": "msvc", "inherits": "default",
+  "configurePreset": "msvc", "configuration": "Release"
+}
 ],
 "workflowPresets": [
   {
@@ -60,6 +72,13 @@
     "steps": [
       { "type": "configure", "name": "default" },
       { "type": "build", "name": "default" }
+    ]
+  },
+  {
+    "name": "msvc",
+    "steps": [
+      { "type": "configure", "name": "msvc" },
+      { "type": "build", "name": "msvc" }
     ]
   }
 ]

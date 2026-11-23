@@ -36,3 +36,10 @@ jobs:
 
     - name: shared build
       run: cmake --workflow shared
+
+
+  windows_msvc:
+    runs-on: windows-latest
+    steps:
+    - *checkout
+    - run: cmake --workflow msvc

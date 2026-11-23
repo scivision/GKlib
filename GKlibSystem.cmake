@@ -51,11 +51,11 @@ if(PCRE)
 endif()
 
 if(GKREGEX)
-list(APPEND GKlib_COPTIONS USE_GKREGEX)
+  list(APPEND GKlib_COPTIONS USE_GKREGEX)
 endif()
 
 if(GKRAND)
-list(APPEND GKlib_COPTIONS USE_GKRAND)
+  list(APPEND GKlib_COPTIONS USE_GKRAND)
 endif()
 
 
@@ -67,7 +67,7 @@ endif(HAVE_EXECINFO_H)
 
 check_function_exists(getline HAVE_GETLINE)
 if(HAVE_GETLINE)
- list(APPEND GKlib_COPTIONS HAVE_GETLINE)
+  list(APPEND GKlib_COPTIONS HAVE_GETLINE)
 endif(HAVE_GETLINE)
 
 
