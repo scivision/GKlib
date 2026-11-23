@@ -9,14 +9,17 @@
   "cacheVariables": {
     "GKlib_BUILD_TESTING": true
   }
+},
+{
+  "name": "shared", "inherits": "default",
+  "cacheVariables": {
+    "BUILD_SHARED_LIBS": true
+  }
 }
 ],
 "buildPresets": [
-  {
-    "name": "default",
-    "configurePreset": "default",
-    "configuration": "Release"
-  }
+  { "name": "default", "configurePreset": "default", "configuration": "Release" },
+  { "name": "shared", "configurePreset": "shared", "inherits": "default" }
 ],
 "testPresets": [
 {
@@ -33,7 +36,8 @@
     "stopOnFailure": false,
     "timeout": 60
   }
-}
+},
+{ "name": "shared", "configurePreset": "shared", "inherits": "default" }
 ],
 "workflowPresets": [
   {
@@ -42,6 +46,13 @@
       { "type": "configure", "name": "default" },
       { "type": "build", "name": "default" },
       { "type": "test", "name": "default" }
+    ]
+  },
+  {
+    "name": "shared",
+    "steps": [
+      { "type": "configure", "name": "shared" },
+      { "type": "build", "name": "shared" }
     ]
   },
   {
