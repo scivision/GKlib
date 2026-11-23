@@ -75,9 +75,7 @@ endif(HAVE_GETLINE)
 if(MSVC)
   if(NOT DEFINED HAVE_THREADLOCALSTORAGE)
     message(CHECK_START "checking for thread-local storage")
-    try_compile(HAVE_THREADLOCALSTORAGE
-      ${CMAKE_BINARY_DIR}
-      ${GKLIB_PATH}/conf/check_thread_storage.c)
+    try_compile(HAVE_THREADLOCALSTORAGE SOURCES ${GKLIB_PATH}/conf/check_thread_storage.c)
     if(HAVE_THREADLOCALSTORAGE)
       message(CHECK_PASS "found")
     else()
