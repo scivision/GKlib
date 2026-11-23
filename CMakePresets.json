@@ -4,19 +4,16 @@
 "configurePresets": [
 {
   "name": "default",
-  "binaryDir": "${sourceDir}/build",
+  "binaryDir": "build",
+  "generator": "Ninja",
   "cacheVariables": {
-    "BUILD_TESTING": true
+    "GKlib_BUILD_TESTING": true
   }
 }
 ],
 "buildPresets": [
   {
     "name": "default",
-    "configurePreset": "default"
-  },
-  {
-    "name": "release",
     "configurePreset": "default",
     "configuration": "Release"
   }
@@ -25,6 +22,7 @@
 {
   "name": "default",
   "configurePreset": "default",
+  "configuration": "Release",
   "output": {
     "outputOnFailure": true,
     "verbosity": "verbose"
@@ -35,45 +33,22 @@
     "stopOnFailure": false,
     "timeout": 60
   }
-},
-{
-  "name": "release", "inherits": "default",
-  "configuration": "Release"
 }
 ],
 "workflowPresets": [
   {
     "name": "default",
     "steps": [
-      {
-        "type": "configure",
-        "name": "default"
-      },
-      {
-        "type": "build",
-        "name": "default"
-      },
-      {
-        "type": "test",
-        "name": "default"
-      }
+      { "type": "configure", "name": "default" },
+      { "type": "build", "name": "default" },
+      { "type": "test", "name": "default" }
     ]
   },
   {
-    "name": "release",
+    "name": "build",
     "steps": [
-      {
-        "type": "configure",
-        "name": "default"
-      },
-      {
-        "type": "build",
-        "name": "release"
-      },
-      {
-        "type": "test",
-        "name": "release"
-      }
+      { "type": "configure", "name": "default" },
+      { "type": "build", "name": "default" }
     ]
   }
 ]
