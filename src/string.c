@@ -195,7 +195,7 @@ int gk_strstr_replace(char *str, char *pattern, char *replacement, char *options
                 *new_str = (char *)gk_realloc(*new_str, (nlen+1)*sizeof(char), "gk_strstr_replace: new_str");
               }
 
-              strncpy(*new_str+noffset, str+offset+matches[j].rm_so, matches[j].rm_eo);
+              strncpy(*new_str+noffset, str+offset+matches[j].rm_so, matches[j].rm_eo-matches[j].rm_so);
               noffset += matches[j].rm_eo-matches[j].rm_so;
             }
             else {
@@ -483,7 +483,7 @@ char *gk_time2str(time_t time)
 
 
 
-#if !defined(WIN32) && !defined(__MINGW32__)
+#if !defined(_WIN32) && !defined(__MINGW32__)
 /************************************************************************/
 /*! \brief Converts a date/time string into its equivalent time_t value
 

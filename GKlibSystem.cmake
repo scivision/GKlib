@@ -12,6 +12,7 @@ option(GKRAND "enable GKRAND support" OFF)
 # Add compiler flags.
 if(MSVC)
   set(GKlib_COPTIONS WIN32 MSC _CRT_SECURE_NO_DEPRECATE USE_GKREGEX)
+  set(GKREGEX ON)
 elseif(WIN32)
   set(GKlib_COPTIONS USE_GKREGEX)
 else()

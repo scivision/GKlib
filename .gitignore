@@ -55,3 +55,9 @@ dkms.conf
 build/
 lib/
 .svn/
+# AI/editor tooling scratch directories (never part of the source tree)
+.aijournal/
+.aisources/
+
+# macOS Finder droppings
+.DS_Store

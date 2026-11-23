@@ -32,10 +32,18 @@
 
 
 #ifdef __MSC__ 
-  #include "gk_ms_stdint.h"
-  #include "gk_ms_inttypes.h"
+  /* VS2010+ ships <stdint.h>/<inttypes.h>; the bundled polyfills are for older MSVC. */
+  #if _MSC_VER >= 1600
+    #include <stdint.h>
+    #include <inttypes.h>
+  #else
+    #include "gk_ms_stdint.h"
+    #include "gk_ms_inttypes.h"
+  #endif
   #include "gk_ms_stat.h"
-  #include "win32/adapt.h"
+  #include <io.h>
+  #include <process.h>
+  typedef int pid_t;
 #else
 #ifndef SUNOS
   #include <stdint.h>
@@ -53,7 +61,7 @@
 /*************************************************************************
 * Architecture-specific modifications
 **************************************************************************/
-#ifdef WIN32
+#ifdef _WIN32
 typedef ptrdiff_t ssize_t;
 #endif
 
@@ -63,7 +71,13 @@ typedef ptrdiff_t ssize_t;
 #endif
 
 /* MSC does not have INFINITY defined */
+/* Ensure INFINITY is available. C99 and later (including MSVC's UCRT) define
+   it in <math.h>; pull that in first so the guard below sees the system
+   definition instead of shadowing it (which triggers MSVC warning C4005).
+   The FLT_MAX fallback only applies to toolchains that genuinely lack it. */
+#include <math.h>
 #ifndef INFINITY
+#include <float.h>
 #define INFINITY FLT_MAX
 #endif
 

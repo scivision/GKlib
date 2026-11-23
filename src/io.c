@@ -16,10 +16,6 @@ This file contains various functions that perform I/O.
 #undef _GNU_SOURCE
 #endif
 
-#ifdef _MSC_VER
-#include <io.h>
-#endif
-
 #include <GKlib.h>
 
 /*************************************************************************
