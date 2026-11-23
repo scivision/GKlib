@@ -78,7 +78,8 @@
     "name": "msvc",
     "steps": [
       { "type": "configure", "name": "msvc" },
-      { "type": "build", "name": "msvc" }
+      { "type": "build", "name": "msvc" },
+      { "type": "test", "name": "msvc" }
     ]
   }
 ]

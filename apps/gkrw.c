@@ -67,7 +67,7 @@ static char helpstr[][100] = {
 "     Specifies the follow-the-adjacent-links probability. [default: 0.80]",
 " ",
 "  -eps=float",
-"     Specifies the error tollerance. [default: 1e-10]",
+"     Specifies the error tolerance. [default: 1e-10]",
 " ",
 "  -ppr=int",
 "     Specifies the source of the personalized PR. [default: -1]",

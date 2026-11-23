@@ -64,8 +64,9 @@ endif()
 
 if(GKlib_BUILD_TESTING)
   enable_testing()
-  add_subdirectory(test)
 endif()
+
+add_subdirectory(apps)
 
 install(TARGETS GKlib GKlib_vendor EXPORT ${PROJECT_NAME}-targets)
 
