@@ -31,4 +31,8 @@ jobs:
     - &checkout
       uses: actions/checkout@v7
 
-    - run: cmake --workflow default
+    - name: static build
+      run: cmake --workflow default
+
+    - name: shared build
+      run: cmake --workflow shared
